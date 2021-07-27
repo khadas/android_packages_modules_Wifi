@@ -42,7 +42,7 @@ public class WifiGlobals {
     private final Context mContext;
 
     private final AtomicInteger mPollRssiIntervalMillis = new AtomicInteger(-1);
-    private final AtomicBoolean mIpReachabilityDisconnectEnabled = new AtomicBoolean(true);
+    private final AtomicBoolean mIpReachabilityDisconnectEnabled = new AtomicBoolean(false);
     private final AtomicBoolean mIsBluetoothConnected = new AtomicBoolean(false);
 
     // This is read from the overlay, cache it after boot up.
