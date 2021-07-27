@@ -45,6 +45,7 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.WorkSource;
@@ -157,6 +158,7 @@ public class SoftApManager implements ActiveModeManager {
     private boolean mBridgedModeOpportunisticsShutdownTimeoutEnabled = false;
 
     private final SarManager mSarManager;
+    private PowerManager.WakeLock mSoftApWakeLock;
 
     private String mStartTimestamp;
 
@@ -413,6 +415,8 @@ public class SoftApManager implements ActiveModeManager {
         mRole = role;
         enableVerboseLogging(verboseLoggingEnabled);
         mStateMachine.sendMessage(SoftApStateMachine.CMD_START, requestorWs);
+	PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+	mSoftApWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SoftAp");
     }
 
     @Override
@@ -757,6 +761,10 @@ public class SoftApManager implements ActiveModeManager {
 
         mWifiDiagnostics.startLogging(mApInterfaceName);
         mStartTimestamp = FORMATTER.format(new Date(System.currentTimeMillis()));
+	if (!mSoftApWakeLock.isHeld()) {
+		Log.d(TAG,"---- mSoftApWakeLock.acquire ----");
+		mSoftApWakeLock.acquire();
+	}
         Log.d(getTag(), "Soft AP is started ");
 
         return SUCCESS;
@@ -780,6 +788,10 @@ public class SoftApManager implements ActiveModeManager {
         disconnectAllClients();
         mWifiDiagnostics.stopLogging(mApInterfaceName);
         mWifiNative.teardownInterface(mApInterfaceName);
+	if (mSoftApWakeLock.isHeld()) {
+		Log.d(TAG,"---- mSoftApWakeLock.release ----");
+		mSoftApWakeLock.release();
+	}
         Log.d(getTag(), "Soft AP is stopped");
     }
 
