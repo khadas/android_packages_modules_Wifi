@@ -86,7 +86,7 @@ import java.util.Set;
 public class WifiScanningServiceImpl extends IWifiScanner.Stub {
 
     private static final String TAG = WifiScanningService.TAG;
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
 
     private static final int UNKNOWN_PID = -1;
 

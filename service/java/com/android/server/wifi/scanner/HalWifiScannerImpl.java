@@ -37,7 +37,7 @@ import java.io.PrintWriter;
  */
 public class HalWifiScannerImpl extends WifiScannerImpl implements Handler.Callback {
     private static final String TAG = "HalWifiScannerImpl";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
 
     private final WifiNative mWifiNative;
     private final ChannelHelper mChannelHelper;

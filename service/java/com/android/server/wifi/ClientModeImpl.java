@@ -7004,6 +7004,7 @@ public class ClientModeImpl extends StateMachine implements ClientMode {
 
             if (!isUsingStaticIp) {
                 prov = new ProvisioningConfiguration.Builder()
+		    .withoutIpReachabilityMonitor()
                     .withPreDhcpAction()
                     .withNetwork(getCurrentNetwork())
                     .withDisplayName(config.SSID)

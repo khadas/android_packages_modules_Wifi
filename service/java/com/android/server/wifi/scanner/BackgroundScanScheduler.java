@@ -60,7 +60,7 @@ import java.util.Set;
 public class BackgroundScanScheduler {
 
     private static final String TAG = "BackgroundScanScheduler";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
 
     public static final int DEFAULT_MAX_BUCKETS = 8;
     // Max channels that can be specified per bucket

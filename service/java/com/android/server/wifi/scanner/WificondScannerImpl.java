@@ -51,7 +51,7 @@ import javax.annotation.concurrent.GuardedBy;
  */
 public class WificondScannerImpl extends WifiScannerImpl implements Handler.Callback {
     private static final String TAG = "WificondScannerImpl";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
 
     public static final String TIMEOUT_ALARM_TAG = TAG + " Scan Timeout";
     // Default number of networks that can be specified to wificond per scan request
