@@ -2408,7 +2408,7 @@ public class WifiConnectivityManager {
             startPeriodicScan(scanImmediately);
         } else {
             if (mWifiState == WIFI_STATE_DISCONNECTED && !mPnoScanStarted) {
-		startPeriodicScan(scanImmediately);
+		startDisconnectedPnoScan();
             }
         }
     }
