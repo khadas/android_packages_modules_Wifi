@@ -2258,6 +2258,17 @@ public class ActiveModeWarden {
                         // Defer the message and wait for entering disabled state.
                         deferMessage(msg);
                         break;
+                    case CMD_RECOVERY_RESTART_WIFI_CONTINUE:
+                        int nCallbacks = mRestartCallbacks.beginBroadcast();
+                        for (int i = 0; i < nCallbacks; i++) {
+                            try {
+                                mRestartCallbacks.getBroadcastItem(i).onSubsystemRestarted();
+                            } catch (RemoteException e) {
+                                Log.e(TAG, "Failure calling onSubsystemRestarted" + e);
+                            }
+                        }
+                        mRestartCallbacks.finishBroadcast();
+                        break;
                     case CMD_RECOVERY_RESTART_WIFI: {
                         final String bugTitle;
                         final String bugDetail = (String) msg.obj;
@@ -2293,6 +2304,7 @@ public class ActiveModeWarden {
                         mRestartCallbacks.finishBroadcast();
                         shutdownWifi();
                         // onStopped will move the state machine to "DisabledState".
+                        transitionTo(mDisabledState);
                         break;
                     }
                     default:
