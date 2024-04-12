@@ -379,9 +379,6 @@ public class WifiDialogActivity extends Activity  {
         if (mGravity != Gravity.NO_GRAVITY) {
             dialog.getWindow().setGravity(mGravity);
         }
-        if (BuildCompat.isAtLeastU()) {
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
-        }
         mActiveDialogsPerId.put(dialogId, dialog);
         long timeoutMs = intent.getLongExtra(WifiManager.EXTRA_DIALOG_TIMEOUT_MS, 0);
         if (timeoutMs > 0) {
