@@ -3171,6 +3171,19 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
                             } else {
                                 mAutonomousGroup = false;
                                 mWifiNative.p2pStopFind();
+
+				// @Rockchip fix
+				// WFD: fix can not cast to Windows10 system again.
+				Log.d(TAG,"Connect p2p");
+				if (mInterfaceName != null) {
+				    if (mWifiNative.p2pListNetworks(mGroups)) {
+					for (WifiP2pGroup group : mGroups.getGroupList()) {
+						mWifiNative.removeP2pNetwork(group.getNetworkId());
+					}
+				    }
+				    updatePersistentNetworks(true);
+				}
+				// @end
                                 if (reinvokePersistentGroup(config, false)) {
                                     mWifiP2pMetrics.startConnectionEvent(
                                             P2pConnectionEvent.CONNECTION_REINVOKE,
@@ -5613,7 +5626,7 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
             boolean join = dev.isGroupOwner() || isInvited
                     || config.isJoinExistingGroup();
             String ssid = mWifiNative.p2pGetSsid(dev.deviceAddress);
-            if (mVerboseLoggingEnabled) logd("target ssid is " + ssid + " join:" + join);
+            logd("target ssid is " + ssid + " join:" + join);
 
             if (join && dev.isGroupLimit()) {
                 if (mVerboseLoggingEnabled) logd("target device reaches group limit.");
@@ -5621,6 +5634,7 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
                 // if the target group has reached the limit,
                 // try group formation.
                 join = false;
+
             } else if (join) {
                 int netId = mGroups.getNetworkId(dev.deviceAddress, ssid);
                 if (isInvited && netId < 0) {
@@ -5629,7 +5643,7 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
                 if (netId >= 0) {
                     // Skip WPS and start 4way handshake immediately.
                     return mWifiNative.p2pGroupAdd(netId);
-                }
+		}
             }
 
             if (!join && dev.isDeviceLimit()) {
