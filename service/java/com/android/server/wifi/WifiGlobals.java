@@ -86,8 +86,9 @@ public class WifiGlobals {
                 .getBoolean(R.bool.config_wifiFlushAnqpCacheOnWifiToggleOffEvent);
         mIsWpa3SaeH2eSupported = mContext.getResources()
                 .getBoolean(R.bool.config_wifiSaeH2eSupported);
-        mP2pDeviceNamePrefix = mContext.getResources()
-                .getString(R.string.config_wifiP2pDeviceNamePrefix);
+//        mP2pDeviceNamePrefix = mContext.getResources()
+//                .getString(R.string.config_wifiP2pDeviceNamePrefix);
+        mP2pDeviceNamePrefix = android.os.Build.MODEL+"_";
         mP2pDeviceNamePostfixNumDigits = mContext.getResources()
                 .getInteger(R.integer.config_wifiP2pDeviceNamePostfixNumDigits);
         mClientModeImplNumLogRecs = mContext.getResources()

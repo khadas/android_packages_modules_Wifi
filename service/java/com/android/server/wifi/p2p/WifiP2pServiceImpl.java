@@ -5316,16 +5316,26 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
                         }
                     };
 
-            mInvitationDialogHandle =
-                    mWifiInjector.getWifiDialogManager().createP2pInvitationReceivedDialog(
-                            deviceName,
-                            isPinRequested,
-                            displayPin,
-                            displayId,
-                            callback,
-                            new WifiThreadRunner(getHandler()));
-            mInvitationDialogHandle.launchDialog(mContext.getResources().getInteger(
-                    R.integer.config_p2pInvitationReceivedDialogTimeoutMs));
+            String optionalPin = displayPin;
+            if (optionalPin != null) {
+                mSavedPeerConfig.wps.pin = optionalPin;
+            }
+            if (mVerboseLoggingEnabled) {
+                logd(getName() + " accept invitation " + mSavedPeerConfig);
+            }
+            sendMessage(PEER_CONNECTION_USER_ACCEPT);
+            mInvitationDialogHandle = null;
+
+//            mInvitationDialogHandle =
+//                    mWifiInjector.getWifiDialogManager().createP2pInvitationReceivedDialog(
+//                            deviceName,
+//                            isPinRequested,
+//                            displayPin,
+//                            displayId,
+//                            callback,
+//                            new WifiThreadRunner(getHandler()));
+//            mInvitationDialogHandle.launchDialog(mContext.getResources().getInteger(
+//                    R.integer.config_p2pInvitationReceivedDialogTimeoutMs));
         }
 
         private void notifyInvitationReceived(
@@ -5837,17 +5847,24 @@ public class WifiP2pServiceImpl extends IWifiP2pManager.Stub {
             }
 
             String postfix;
-            if (numDigits >= DEVICE_NAME_POSTFIX_LENGTH_MIN) {
-                postfix = StringUtil.generateRandomNumberString(numDigits);
-            } else if (!SdkLevel.isAtLeastT()) {
-                // We use the 4 digits of the ANDROID_ID to have a friendly
-                // default that has low likelihood of collision with a peer
-                String id = mFrameworkFacade.getSecureStringSetting(mContext,
-                        Settings.Secure.ANDROID_ID);
+            String id = mFrameworkFacade.getSecureStringSetting(mContext,Settings.Secure.ANDROID_ID);
+            if (!TextUtils.isEmpty(id)) {
+                logd("id: " + id);
                 postfix = id.substring(0, 4);
             } else {
                 postfix = StringUtil.generateRandomString(4);
             }
+//            if (numDigits >= DEVICE_NAME_POSTFIX_LENGTH_MIN) {
+//                postfix = StringUtil.generateRandomNumberString(numDigits);
+//            } else if (!SdkLevel.isAtLeastT()) {
+//                // We use the 4 digits of the ANDROID_ID to have a friendly
+//                // default that has low likelihood of collision with a peer
+//                String id = mFrameworkFacade.getSecureStringSetting(mContext,
+//                        Settings.Secure.ANDROID_ID);
+//                postfix = id.substring(0, 4);
+//            } else {
+//                postfix = StringUtil.generateRandomString(4);
+//            }
             mDefaultDeviceName = prefix + postfix;
             mLastDefaultDeviceNameGeneratingTimeMillis = mClock.getElapsedSinceBootMillis();
             logd("the default device name: " + mDefaultDeviceName);
